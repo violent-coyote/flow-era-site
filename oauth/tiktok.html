@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flow Era Publisher: TikTok sign-in</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/icon-200.png">
+<style>
+  body { margin:0; background:#141418; color:#f2f2f2; font:17px/1.6 system-ui, sans-serif; padding:32px 16px; }
+  main { max-width:680px; margin:0 auto; }
+  a { color:#e4141b; }
+  h1 { font-size:1.6rem; }
+  label { display:block; margin-top:20px; color:#9a9aa3; font-size:14px; }
+  textarea { width:100%; box-sizing:border-box; margin-top:6px; padding:12px; font:15px/1.4 ui-monospace, monospace;
+             background:#0c0c0f; color:#f2f2f2; border:1px solid #333; border-radius:8px; resize:vertical; }
+  button { margin-top:8px; padding:8px 14px; font:15px system-ui, sans-serif; background:#e4141b; color:#fff;
+           border:0; border-radius:8px; cursor:pointer; }
+  .err { color:#ff8a8f; }
+</style>
+</head>
+<body>
+<main>
+  <p><a href="../index.html">Flow Era</a></p>
+  <h1>TikTok sign-in complete</h1>
+  <p id="msg">Copy the authorization code below and paste it into the terminal that is waiting for it.
+  This page makes no network requests; the code is only shown here.</p>
+
+  <label for="code">code</label>
+  <textarea id="code" rows="4" readonly></textarea>
+  <button type="button" id="copy">Copy code</button>
+
+  <label for="state">state</label>
+  <textarea id="state" rows="1" readonly></textarea>
+
+  <p id="status" style="display:none"></p>
+</main>
+<script>
+  // Static OAuth redirect target. Reads the query string and shows it; nothing leaves this page.
+  var q = new URLSearchParams(location.search);
+  var code = q.get('code') || '';
+  var state = q.get('state') || '';
+  document.getElementById('code').value = code;
+  document.getElementById('state').value = state;
+  if (q.get('error')) {
+    var m = document.getElementById('msg');
+    m.className = 'err';
+    m.textContent = 'TikTok returned an error: ' + q.get('error') + ' ' + (q.get('error_description') || '');
+  } else if (!code) {
+    document.getElementById('msg').textContent = 'No authorization code in the URL. Start the sign-in from the terminal again.';
+  }
+  document.getElementById('copy').addEventListener('click', function () {
+    var s = document.getElementById('status');
+    function show(t) { s.style.display = 'block'; s.textContent = t; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function () { show('Copied.'); }, function () { show('Select the box and copy by hand.'); });
+    } else { show('Select the box and copy by hand.'); }
+  });
+</script>
+</body>
+</html>
