@@ -1,0 +1,19 @@
+# Copy to .github/workflows/announce-run.yml on the default branch of any
+# violent-coyote repo: every finished workflow run posts one line to #github.
+# Logic and docs: violent-coyote/cof-bots, bots/workflow-run.md.
+# Keep the "/" in the name: the "*" glob below does not match "/", so this
+# workflow never announces itself.
+name: cof-bots/announce
+
+on:
+  workflow_run:
+    workflows: ["*"]
+    types: [completed]
+
+jobs:
+  announce:
+    uses: violent-coyote/cof-bots/.github/workflows/announce-run.yml@main
+    permissions:
+      actions: read
+      contents: read
+    secrets: inherit
